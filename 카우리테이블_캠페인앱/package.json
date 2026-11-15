@@ -1,0 +1,10 @@
+{
+  "name": "kauri-table-campaign",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "교보문고 카우리테이블 캠페인 모바일 페이지 (댓글·에티켓 퀴즈·쿠폰)",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

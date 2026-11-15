@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>카우리테이블 | 함께 만들어가는 독서문화</title>
+<meta name="description" content="카우리테이블 이야기와 독서공간 에티켓, 에티켓 퀴즈와 고객 참여 공간">
+<meta name="theme-color" content="#3B2A1C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<style>
+/* 나무결 히어로 → 이야기 → 에티켓 → 퀴즈·쿠폰 → 함께 남기는 이야기 (모바일 한 줄 흐름) */
+:root{
+  --bg:#F6F1E8; --surface:#FFFCF6; --line:#E2D7C4; --fg:#2A2118; --muted:#6B5D4C;
+  --wood:#8A5A2E; --wood-soft:#F3E6D6; --forest:#2F5A46; --forest-soft:#E3ECE5; --on-forest:#FFFCF6;
+  --hero:#3B2A1C; --hero-fg:#F6EBDB; --hero-muted:#D2BFA4; --bad:#A2412B; --bad-soft:#F7E3DC;
+  --display:"Gowun Batang","Noto Serif KR",Georgia,serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:108px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.7;word-break:keep-all;-webkit-text-size-adjust:100%}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);margin:0;font-weight:700;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--forest);outline-offset:2px}
+
+header.bar{position:sticky;top:0;z-index:20;background:rgba(246,241,232,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar .top{height:52px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;flex-direction:column;line-height:1.2}
+.brand b{font-family:var(--display);font-size:18px}
+.brand span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{flex:none;text-decoration:none;font-size:14px;font-weight:500;color:var(--muted);padding:9px 10px 11px;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--fg);font-weight:600;border-bottom-color:var(--wood)}
+
+.hero{background:var(--hero);color:var(--hero-fg);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;opacity:.18;background:repeating-radial-gradient(ellipse at 110% 120%,transparent 0 14px,var(--hero-muted) 14px 15px,transparent 15px 31px)}
+.hero .wrap{position:relative;padding-top:36px;padding-bottom:32px;display:flex;flex-direction:column;gap:12px}
+.kicker{font-size:13px;letter-spacing:.12em;color:var(--hero-muted)}
+.hero h1{font-size:29px;line-height:1.35}
+.hero .lead{color:var(--hero-muted);font-size:15px}
+.hero .cta{align-self:flex-start;margin-top:6px;background:var(--hero-fg);color:var(--hero);text-decoration:none;font-weight:600;font-size:15px;padding:11px 18px;border-radius:999px}
+
+section.block{padding-top:34px;padding-bottom:34px;display:flex;flex-direction:column;gap:18px;border-top:1px solid var(--line)}
+.eyebrow{font-size:13px;letter-spacing:.1em;color:var(--wood);font-weight:600}
+section.block h2{font-size:25px;line-height:1.35}
+.desc{color:var(--muted);font-size:15px}
+
+video.film{display:block;width:100%;aspect-ratio:16/9;border-radius:12px;background:var(--hero);object-fit:cover}
+.caption{font-size:13px;color:var(--muted);margin-top:-10px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;gap:2px}
+.fact b{font-family:var(--display);font-size:22px;color:var(--wood);line-height:1.2}
+.fact span{font-size:13px;color:var(--muted);line-height:1.45}
+.quote{border-left:3px solid var(--wood);padding:4px 0 4px 14px;font-family:var(--display);font-size:17px;line-height:1.6}
+
+.rules{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.rule{display:flex;gap:14px;align-items:flex-start;padding:16px}
+.rule+.rule{border-top:1px solid var(--line)}
+.rule svg{flex:none;width:28px;height:28px;color:var(--forest)}
+.rule h3{font-family:var(--body);font-size:16px;font-weight:600;line-height:1.5}
+.rule p{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* 퀴즈 */
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 18px;display:flex;flex-direction:column;gap:16px}
+.reward{display:flex;gap:12px;align-items:center;background:var(--wood-soft);border-radius:12px;padding:12px 14px;font-size:14px}
+.reward b{font-size:15px}
+.progress{display:flex;gap:6px}
+.progress i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.progress i.done{background:var(--forest)}
+.progress i.now{background:var(--wood)}
+.qno{font-size:13px;color:var(--wood);font-weight:600}
+.qtext{font-family:var(--display);font-size:20px;line-height:1.45}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;min-height:52px;padding:12px 16px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);font-size:15px;cursor:pointer;line-height:1.45}
+.opt:hover{border-color:var(--wood)}
+.opt.right{border-color:var(--forest);background:var(--forest-soft);font-weight:600}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.feedback{font-size:14px;border-radius:10px;padding:12px 14px}
+.feedback.good{background:var(--forest-soft);color:var(--forest)}
+.feedback.bad{background:var(--bad-soft);color:var(--bad)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;border:none;border-radius:12px;background:var(--forest);color:var(--on-forest);font-weight:600;font-size:16px;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+
+/* 쿠폰 */
+.coupon{position:relative;background:var(--hero);color:var(--hero-fg);border-radius:16px;padding:22px 20px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.coupon::before{content:"";position:absolute;inset:0;opacity:.14;background:repeating-radial-gradient(ellipse at -10% -20%,transparent 0 14px,var(--hero-muted) 14px 15px,transparent 15px 31px)}
+.coupon > *{position:relative}
+.coupon .ctitle{font-size:13px;letter-spacing:.1em;color:var(--hero-muted)}
+.coupon .rate{font-family:var(--display);font-size:40px;line-height:1.1}
+.coupon .target{font-size:15px;color:var(--hero-muted)}
+.coupon .code{font-family:ui-monospace,Menlo,monospace;font-size:24px;letter-spacing:.12em;background:rgba(246,235,219,.12);border:1px dashed var(--hero-muted);border-radius:10px;padding:10px;text-align:center}
+.coupon .until{font-size:14px}
+.coupon .used{font-size:14px;background:var(--bad-soft);color:var(--bad);border-radius:8px;padding:6px 10px;align-self:flex-start;font-weight:600}
+.notes{font-size:12.5px;color:var(--muted);padding-left:18px;margin:0;display:flex;flex-direction:column;gap:2px}
+
+/* 댓글 */
+form.write{display:flex;flex-direction:column;gap:10px;background:var(--forest-soft);border-radius:14px;padding:16px}
+form.write label{font-size:13px;font-weight:600}
+input,textarea{font:inherit;font-size:15px;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+textarea{min-height:96px;resize:vertical;line-height:1.6}
+.formfoot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.formfoot .btn{width:auto;padding:0 22px;min-height:44px;font-size:15px}
+.count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.status{font-size:13px;min-height:1.2em}
+.status.ok{color:var(--forest)} .status.err{color:var(--bad)}
+.listhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:10px;font-weight:600}
+.sort{display:flex;gap:2px}
+.sort button{border:none;background:none;font-size:13px;color:var(--muted);padding:6px 8px;cursor:pointer;min-height:36px}
+.sort button.on{color:var(--fg);font-weight:600;text-decoration:underline;text-underline-offset:4px}
+.comments{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.comments li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.cmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.cmeta b{color:var(--fg)}
+.ctext{font-size:15px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.like{align-self:flex-start;display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--muted);cursor:pointer;min-height:34px}
+.like.on{border-color:var(--wood);background:var(--wood-soft);color:var(--wood);font-weight:600}
+.empty{text-align:center;color:var(--muted);font-size:14px;border:1px dashed var(--line);border-radius:12px;padding:20px}
+.more{font-size:14px}
+
+footer{padding-top:28px;padding-bottom:calc(40px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+footer b{color:var(--fg);font-family:var(--display);font-size:15px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="top"><div class="brand"><b>카우리테이블</b><span id="storeName">교보문고</span></div></div>
+    <nav class="tabs" aria-label="페이지 메뉴">
+      <a href="#story" class="on">카우리 이야기</a>
+      <a href="#etiquette">에티켓</a>
+      <a href="#quiz">퀴즈</a>
+      <a href="#join">함께 남기기</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <p class="kicker">함께 만들어가는 독서문화</p>
+    <h1>누구나 마음껏 책을 읽을 수 있도록, 이 테이블은 모두의 자리입니다</h1>
+    <p class="lead">약 5만 년을 지나온 나무 위에서, 오늘은 함께 책을 읽습니다.</p>
+    <a class="cta" href="#quiz">에티켓 퀴즈 풀고 쿠폰 받기</a>
+  </div>
+</div>
+
+<main class="wrap">
+
+<section class="block" id="story" style="border-top:none">
+  <p class="eyebrow">카우리 이야기</p>
+  <h2>5만 년의 나무가 독서 테이블이 되기까지</h2>
+  <video class="film" src="assets/kauri_story.mp4" poster="assets/poster.jpg" controls playsinline preload="none" aria-label="카우리테이블 홍보영상"></video>
+  <p class="caption">카우리테이블 홍보영상 · 6분 41초</p>
+  <div class="facts">
+    <div class="fact"><b>5만 년</b><span>카우리 소나무가 지나온 시간</span></div>
+    <div class="fact"><b>100명</b><span>함께 앉아 읽는 자리</span></div>
+    <div class="fact"><b>2015</b><span>광화문점에 처음 놓인 해</span></div>
+  </div>
+  <p class="desc">카우리테이블은 뉴질랜드 습지에 묻혀 보존된 약 5만 년 된 카우리 소나무로 만든 독서 테이블입니다. 교보문고는 문을 연 1981년부터 손님이 오래 머물며 책을 읽는 것을 반겨 왔고, 그 마음을 지금은 이 테이블에 담았습니다.</p>
+  <p class="quote">책은 사서 읽는 것만이 아니라, 머물며 만나는 것입니다.</p>
+</section>
+
+<section class="block" id="etiquette">
+  <p class="eyebrow">독서공간 에티켓</p>
+  <h2>모두의 테이블을 위한 작은 배려</h2>
+  <div class="rules">
+    <div class="rule"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 7c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V6c-3-1-6-1-9 1z"/><path d="M14 7v15"/></svg>
+      <div><h3>책은 한 권씩! 여러 권 쌓아두지 않도록 해요.</h3><p>누군가 간절히 찾고 있는 도서일 수도 있습니다.</p></div></div>
+    <div class="rule"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h18v10H12l-5 4v-4H5z"/></svg>
+      <div><h3>대화는 작은 목소리로</h3><p>옆자리의 독서가 이어지도록 함께 배려해 주세요.</p></div></div>
+    <div class="rule"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="9" y="4" width="10" height="20" rx="2.5"/><path d="M13 20.5h2"/></svg>
+      <div><h3>통화는 잠시 자리를 벗어나서</h3><p>전화가 오면 테이블에서 벗어나 받아 주세요.</p></div></div>
+    <div class="rule"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M7 12V7h14v5"/><path d="M5 12h18v5H5z"/><path d="M7 17v5M21 17v5"/></svg>
+      <div><h3>서로 양보해요</h3><p>서로 함께 배려하며 독서문화를 만들어 주세요.</p></div></div>
+  </div>
+</section>
+
+<section class="block" id="quiz">
+  <p class="eyebrow">에티켓 퀴즈</p>
+  <h2>카우리테이블, 얼마나 알고 계세요?</h2>
+  <div class="quiz" id="quizBox" aria-live="polite">
+    <!-- 시작 화면 -->
+    <div id="qStart" style="display:flex;flex-direction:column;gap:16px">
+      <p class="desc">5문제를 모두 맞히면 함께 지켜 주셔서 고마운 마음을 담아 쿠폰을 드려요. 틀려도 다시 고를 수 있어요.</p>
+      <div class="reward" id="rewardLine">
+        <svg width="30" height="30" viewBox="0 0 28 28" fill="none" stroke="#8A5A2E" stroke-width="1.6" aria-hidden="true"><path d="M4 9h20v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z"/><path d="M11 9v12" stroke-dasharray="2 2"/></svg>
+        <div><b id="rewardTitle">10% 할인 쿠폰</b><br><span id="rewardTarget"></span></div>
+      </div>
+      <button class="btn" id="qBegin" type="button">퀴즈 시작하기</button>
+    </div>
+    <!-- 문제 화면 -->
+    <div id="qRun" hidden style="display:flex;flex-direction:column;gap:16px">
+      <div class="progress" id="qProg"></div>
+      <p class="qno" id="qNo"></p>
+      <p class="qtext" id="qText"></p>
+      <div class="opts" id="qOpts"></div>
+      <p class="feedback" id="qFeed" hidden></p>
+      <button class="btn" id="qNext" type="button" hidden>다음 문제</button>
+    </div>
+    <!-- 완료 화면 -->
+    <div id="qDone" hidden style="display:flex;flex-direction:column;gap:16px">
+      <p class="qtext">5문제를 모두 맞혔어요! 함께 지켜 주셔서 고맙습니다.</p>
+      <div id="couponArea"></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="join">
+  <p class="eyebrow">고객 참여</p>
+  <h2>함께 남기는 이야기</h2>
+  <p class="desc">카우리테이블 이용 경험을 들려주세요. 남겨주신 소중한 글은 매장 운영에 큰 도움이 됩니다.</p>
+  <form class="write" id="cForm" novalidate>
+    <label for="cNick">닉네임 (선택)</label>
+    <input id="cNick" maxlength="12" placeholder="익명의 독자" autocomplete="off">
+    <label for="cText">이야기</label>
+    <textarea id="cText" maxlength="200" placeholder="카우리테이블에서의 경험을 자유롭게 남겨 주세요."></textarea>
+    <div class="formfoot"><span class="count" id="cCount">0 / 200</span><button class="btn" id="cSend" type="submit" disabled>남기기</button></div>
+    <p class="status" id="cStatus" role="status"></p>
+  </form>
+  <p class="notes" style="padding-left:0">개인정보(연락처 등)는 적지 말아 주세요. 타인을 비방하거나 관계없는 내용은 숨김 처리될 수 있어요.</p>
+  <div class="listhead"><span>이야기 <span id="cTotal" style="color:var(--wood)">0</span></span>
+    <div class="sort"><button type="button" class="on" data-sort="new">최신순</button><button type="button" data-sort="like">공감순</button></div></div>
+  <ul class="comments" id="cList"></ul>
+  <p class="empty" id="cEmpty" hidden>아직 남겨진 이야기가 없어요. 첫 이야기를 들려주세요.</p>
+</section>
+
+</main>
+
+<footer><div class="wrap"><b id="footStore">교보문고</b><span>함께 만들어가는 독서문화 / 독서공간 에티켓</span></div></footer>
+
+<script>
+/* ===== 운영 설정: 이 부분만 바꾸면 됩니다 ===== */
+const SETTINGS = {
+  // 매장 코드 → 매장 이름. QR 주소 뒤에 ?store=코드 를 붙이면 그 매장 페이지가 됩니다.
+  stores: { gwanghwamun: "광화문점", gangnam: "강남점", jamsil: "잠실점" },
+  defaultStore: "gwanghwamun",
+  coupon: {
+    title: "10% 할인 쿠폰",
+    target: "[적용 대상 — 예: 매장 내 문구·음료]",   // 확정되면 바꿔 주세요
+    notes: [
+      "계산할 때 이 화면을 직원에게 보여 주세요.",
+      "1인 1회, 발급한 기기에서만 확인할 수 있어요.",
+      "다른 쿠폰·할인과 함께 쓸 수 있는지는 [사용 조건]을 따릅니다.",
+      "도서는 도서정가제에 따라 쿠폰 대상에서 제외될 수 있어요."
+    ]
+  }
+};
+/* ============================================= */
+
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const STORE = SETTINGS.stores[params.get("store")] ? params.get("store") : SETTINGS.defaultStore;
+  const STORE_NAME = "교보문고 " + SETTINGS.stores[STORE];
+  $("storeName").textContent = STORE_NAME; $("footStore").textContent = STORE_NAME;
+
+  const ls = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+  let device = ls.get("kauri-device", null);
+  if (!device) { device = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => b.toString(36).padStart(2, "0")).join("").replace(/[^a-z0-9]/g, "").slice(0, 20).padEnd(16, "x"); ls.set("kauri-device", device); }
+
+  async function api(path, body) {
+    const r = await fetch(path, body ? { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) } : {});
+    let data = {}; try { data = await r.json(); } catch {}
+    if (!r.ok) throw Object.assign(new Error(data.error || "연결이 원활하지 않아요. 잠시 후 다시 시도해 주세요."), { status: r.status });
+    return data;
+  }
+  const fmtDate = (iso) => { const d = new Date(iso); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`; };
+  const ago = (iso) => { const s = (Date.now() - Date.parse(iso)) / 1000; if (s < 60) return "방금"; if (s < 3600) return Math.floor(s / 60) + "분 전"; if (s < 86400) return Math.floor(s / 3600) + "시간 전"; return fmtDate(iso); };
+
+  /* ---------- 탭 표시 ---------- */
+  const tabs = [...document.querySelectorAll(".tabs a")];
+  const secs = tabs.map((a) => document.querySelector(a.getAttribute("href")));
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { const i = secs.indexOf(e.target); tabs.forEach((t, j) => t.classList.toggle("on", i === j)); } }), { rootMargin: "-40% 0px -55% 0px" });
+    secs.forEach((s) => io.observe(s));
+  }
+
+  /* ---------- 퀴즈 ---------- */
+  $("rewardTitle").textContent = SETTINGS.coupon.title;
+  $("rewardTarget").textContent = SETTINGS.coupon.target;
+  let QUIZ = [], couponOn = true, idx = 0, answers = [];
+
+  function renderCoupon(c) {
+    const box = $("couponArea"); box.textContent = "";
+    if (!c) return;
+    const el = document.createElement("div"); el.className = "coupon";
+    const expired = Date.now() > Date.parse(c.expiresAt);
+    el.innerHTML = '<span class="ctitle">카우리테이블 에티켓 퀴즈 완료</span><span class="rate"></span><span class="target"></span><span class="code" aria-label="쿠폰 번호"></span><span class="until"></span>';
+    el.querySelector(".rate").textContent = SETTINGS.coupon.title;
+    el.querySelector(".target").textContent = SETTINGS.coupon.target + " · " + STORE_NAME;
+    el.querySelector(".code").textContent = c.code;
+    el.querySelector(".until").textContent = (expired ? "사용 기한이 지났어요 · " : "사용 기한 ") + fmtDate(c.expiresAt) + "까지";
+    if (c.used) { const u = document.createElement("span"); u.className = "used"; u.textContent = "사용 완료된 쿠폰이에요"; el.appendChild(u); }
+    box.appendChild(el);
+    const ul = document.createElement("ul"); ul.className = "notes";
+    SETTINGS.coupon.notes.forEach((n) => { const li = document.createElement("li"); li.textContent = n; ul.appendChild(li); });
+    box.appendChild(ul);
+  }
+
+  function showDone() {
+    $("qStart").hidden = true; $("qRun").hidden = true; $("qDone").hidden = false;
+    const saved = ls.get("kauri-coupon-" + STORE, null);
+    if (saved) {
+      renderCoupon(saved);
+      api("/api/coupon?code=" + encodeURIComponent(saved.code) + "&device=" + device)
+        .then(({ coupon }) => { ls.set("kauri-coupon-" + STORE, coupon); renderCoupon(coupon); }).catch(() => {});
+      return;
+    }
+    if (!couponOn) { $("couponArea").innerHTML = '<p class="desc">지금은 쿠폰 발급 기간이 아니에요. 참여해 주셔서 고맙습니다.</p>'; return; }
+    $("couponArea").innerHTML = '<p class="desc">쿠폰을 준비하고 있어요…</p>';
+    api("/api/coupon", { store: STORE, device, answers })
+      .then(({ coupon }) => { ls.set("kauri-coupon-" + STORE, coupon); renderCoupon(coupon); })
+      .catch((e) => {
+        const box = $("couponArea"); box.textContent = "";
+        const p = document.createElement("p"); p.className = "status err"; p.textContent = e.message; box.appendChild(p);
+        const b = document.createElement("button"); b.className = "btn ghost"; b.type = "button"; b.textContent = "쿠폰 다시 받기"; b.onclick = showDone; box.appendChild(b);
+      });
+  }
+
+  function renderQ() {
+    const item = QUIZ[idx];
+    $("qProg").innerHTML = QUIZ.map((_, i) => `<i class="${i < idx ? "done" : i === idx ? "now" : ""}"></i>`).join("");
+    $("qNo").textContent = `${idx + 1} / ${QUIZ.length}`;
+    $("qText").textContent = item.q;
+    $("qFeed").hidden = true; $("qNext").hidden = true;
+    const box = $("qOpts"); box.textContent = "";
+    item.options.forEach((o, i) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.textContent = o;
+      b.onclick = () => {
+        if (b.disabled) return;
+        const fb = $("qFeed"); fb.hidden = false;
+        if (i === item.answer) {
+          answers[idx] = i;
+          [...box.children].forEach((c) => (c.disabled = true));
+          b.classList.add("right"); fb.className = "feedback good"; fb.textContent = "정답이에요! " + item.explain;
+          $("qNext").hidden = false; $("qNext").textContent = idx === QUIZ.length - 1 ? "결과 보기" : "다음 문제"; $("qNext").focus();
+        } else {
+          b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong"); b.disabled = true;
+          fb.className = "feedback bad"; fb.textContent = "다시 한번 골라 볼까요?";
+        }
+      };
+      box.appendChild(b);
+    });
+  }
+  $("qNext").onclick = () => { if (idx < QUIZ.length - 1) { idx++; renderQ(); } else { ls.set("kauri-quiz-done-" + STORE, answers); showDone(); } };
+  $("qBegin").onclick = () => {
+    if (!QUIZ.length) return;
+    idx = 0; answers = []; $("qStart").hidden = true; $("qRun").hidden = false; renderQ();
+  };
+
+  api("/api/quiz").then((d) => {
+    QUIZ = d.quiz; couponOn = d.couponEnabled;
+    if (!couponOn) $("rewardLine").hidden = true;
+    const done = ls.get("kauri-quiz-done-" + STORE, null);
+    if (done && done.length === QUIZ.length) { answers = done; showDone(); }
+  }).catch(() => { $("qBegin").disabled = true; $("qBegin").textContent = "퀴즈를 불러오지 못했어요"; });
+
+  /* ---------- 댓글 ---------- */
+  const liked = new Set(ls.get("kauri-liked", []));
+  let comments = [], sortBy = "new";
+  const text = $("cText"), send = $("cSend"), st = $("cStatus");
+  text.addEventListener("input", () => { $("cCount").textContent = text.value.length + " / 200"; send.disabled = text.value.trim().length < 2; st.textContent = ""; });
+
+  function renderComments() {
+    const list = comments.slice().sort((a, b) => sortBy === "like" ? (b.likes - a.likes) || b.id.localeCompare(a.id) : b.id.localeCompare(a.id));
+    const ul = $("cList"); ul.textContent = "";
+    list.forEach((c) => {
+      const li = document.createElement("li");
+      const meta = document.createElement("div"); meta.className = "cmeta";
+      const n = document.createElement("b"); n.textContent = c.nick; const d = document.createElement("span"); d.textContent = ago(c.createdAt);
+      meta.append(n, d);
+      const p = document.createElement("p"); p.className = "ctext"; p.textContent = c.text;
+      const lb = document.createElement("button"); lb.type = "button"; lb.className = "like" + (liked.has(c.id) ? " on" : "");
+      lb.setAttribute("aria-pressed", liked.has(c.id)); lb.textContent = "♡ 공감 " + c.likes;
+      lb.onclick = async () => {
+        const undo = liked.has(c.id); lb.disabled = true;
+        try { const r = await api("/api/like", { store: STORE, id: c.id, undo }); c.likes = r.likes; undo ? liked.delete(c.id) : liked.add(c.id); ls.set("kauri-liked", [...liked]); renderComments(); }
+        catch { lb.disabled = false; }
+      };
+      li.append(meta, p, lb); ul.appendChild(li);
+    });
+    $("cTotal").textContent = comments.length;
+    $("cEmpty").hidden = comments.length > 0;
+  }
+  function loadComments() {
+    api("/api/comments?store=" + STORE).then((d) => { comments = d.comments; renderComments(); })
+      .catch(() => { $("cEmpty").hidden = false; $("cEmpty").textContent = "이야기를 불러오지 못했어요. 잠시 후 다시 열어 주세요."; });
+  }
+  document.querySelectorAll(".sort button").forEach((b) => b.onclick = () => {
+    sortBy = b.dataset.sort; document.querySelectorAll(".sort button").forEach((x) => x.classList.toggle("on", x === b)); renderComments();
+  });
+  $("cForm").addEventListener("submit", async (e) => {
+    e.preventDefault(); if (send.disabled) return;
+    send.disabled = true; st.className = "status"; st.textContent = "남기는 중…";
+    try {
+      const { comment } = await api("/api/comments", { store: STORE, nick: $("cNick").value, text: text.value });
+      comments.unshift(comment); sortBy = "new";
+      document.querySelectorAll(".sort button").forEach((x) => x.classList.toggle("on", x.dataset.sort === "new"));
+      renderComments(); text.value = ""; $("cCount").textContent = "0 / 200";
+      st.className = "status ok"; st.textContent = "이야기가 등록되었어요. 함께 나눠 주셔서 고맙습니다.";
+    } catch (err) { st.className = "status err"; st.textContent = err.message; send.disabled = false; }
+  });
+  loadComments();
+})();
+</script>
+</body>
+</html>
